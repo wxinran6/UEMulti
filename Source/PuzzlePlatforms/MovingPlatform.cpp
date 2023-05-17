@@ -25,28 +25,44 @@ void AMovingPlatform::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (HasAuthority())
+    if (ActiveTriggers > 0)
     {
-        FVector Location = GetActorLocation();
-        // FVector GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
-        float JourneyLength = (GlobalTargetLocation-GlobalStartLocation).Size();
-        float JourneyTravelled = (Location-GlobalStartLocation).Size();
-        if (JourneyTravelled >= JourneyLength)
+
+        if (HasAuthority())
         {
-            GlobalTargetLocation = GlobalStartLocation;
-            GlobalStartLocation = GetActorLocation();
-            // FVector Swap = GlobalStartLocaiton;
-            // GlobalStartLocation = GlobalTargetLocation;
-            // GlobalTargetLocation = Swap;
-            // FVector Direction = (GlobalTargetLocation-GlobalStartLocation).GetSafeNormal();
+            FVector Location = GetActorLocation();
+            // FVector GlobalTargetLocation = GetTransform().TransformPosition(TargetLocation);
+            float JourneyLength = (GlobalTargetLocation-GlobalStartLocation).Size();
+            float JourneyTravelled = (Location-GlobalStartLocation).Size();
+            if (JourneyTravelled >= JourneyLength)
+            {
+                GlobalTargetLocation = GlobalStartLocation;
+                GlobalStartLocation = GetActorLocation();
+                // FVector Swap = GlobalStartLocaiton;
+                // GlobalStartLocation = GlobalTargetLocation;
+                // GlobalTargetLocation = Swap;
+                // FVector Direction = (GlobalTargetLocation-GlobalStartLocation).GetSafeNormal();
 
+            }
+            FVector Direction = (GlobalTargetLocation-Location).GetSafeNormal();
+
+            Location += Speed*DeltaTime*Direction;
+            SetActorLocation(Location);
         }
-        FVector Direction = (GlobalTargetLocation-Location).GetSafeNormal();
-
-        Location += Speed*DeltaTime*Direction;
-        SetActorLocation(Location);
+    
     }
-
     
 }
 
+void AMovingPlatform::AddActiveTrigger()
+{
+    ActiveTriggers++;
+}
+
+void AMovingPlatform::RemoveActiveTrigger()
+{
+    if(ActiveTriggers > 0)
+    {
+        ActiveTriggers--;
+    }
+}
