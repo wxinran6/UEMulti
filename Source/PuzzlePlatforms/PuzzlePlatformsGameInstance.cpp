@@ -6,10 +6,15 @@
 #include "Engine/Engine.h"
 
 #include "Engine/World.h"
-
+#include "UObject/ConstructorHelpers.h"
+#include "PlatformTrigger.h"
+#include "Blueprint/UserWidget.h"
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer & ObjectInitializer)
 {
-    UE_LOG(LogTemp, Warning, TEXT("GameInstance Constructor"));
+    ConstructorHelpers::FClassFinder<APlatformTrigger> PlatformTriggerBPClass(TEXT("/Game/BO_PlatformTrigger"));
+    if (!ensure(PlatformTriggerBPClass.Class != nullptr)) return;
+
+    UE_LOG(LogTemp, Warning, TEXT("Found class %s"), *PlatformTriggerBPClass.Class->GetName());
 }
 
 void UPuzzlePlatformsGameInstance::init()
